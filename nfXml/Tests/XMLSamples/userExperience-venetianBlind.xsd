@@ -1,0 +1,159 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="UserExperienceManifest" type="user:userexperiencemanifestType" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+  <xs:complexType name="bulletType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="label"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="bulletsType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="option"/>
+      <xs:element type="user:bulletType" name="bullet" maxOccurs="unbounded" minOccurs="0" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="paragraphType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="label"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="descriptionType">
+    <xs:sequence>
+      <xs:element type="user:bulletsType" name="bullets" minOccurs="0" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+      <xs:element type="user:paragraphType" name="paragraph" maxOccurs="unbounded" minOccurs="0" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="packageType" mixed="true">
+    <xs:sequence>
+      <xs:element type="user:packagelogType" name="packagelog" minOccurs="0" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="id" use="optional"/>
+    <xs:attribute type="xs:string" name="installcondition" use="optional"/>
+    <xs:attribute type="xs:string" name="sharedorpayload" use="optional"/>
+    <xs:attribute type="xs:string" name="skipmsireplacementcheck" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="packagesType">
+    <xs:sequence>
+      <xs:element type="user:packageType" name="package" maxOccurs="unbounded" minOccurs="0" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="optionType">
+    <xs:sequence>
+      <xs:element type="user:descriptionType" name="description" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+      <xs:element type="user:packagesType" name="packages" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+      <xs:element type="xs:string" name="suboptions"/>
+      <xs:element type="xs:string" name="dependencies"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="available" use="optional"/>
+    <xs:attribute type="xs:string" name="id" use="optional"/>
+    <xs:attribute type="xs:string" name="infrastructure" use="optional"/>
+    <xs:attribute type="xs:string" name="name" use="optional"/>
+    <xs:attribute type="xs:string" name="prerelease" use="optional"/>
+    <xs:attribute type="xs:string" name="selected" use="optional"/>
+    <xs:attribute type="xs:string" name="setupprerequisite" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="customlogType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="createsubdirectory"/>
+        <xs:attribute type="xs:string" name="extension"/>
+        <xs:attribute type="xs:string" name="preferred"/>
+        <xs:attribute type="xs:string" name="type"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="customlogsType">
+    <xs:sequence>
+      <xs:element type="user:customlogType" name="customlog" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="packagelogType">
+    <xs:sequence>
+      <xs:element type="user:customlogsType" name="customlogs" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="optionsType">
+    <xs:sequence>
+      <xs:element type="user:optionType" name="option" maxOccurs="unbounded" minOccurs="0" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="defaultinstallpathType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="islocked"/>
+        <xs:attribute type="xs:string" name="msivariable"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="sourceresolutionType">
+    <xs:sequence>
+      <xs:element type="xs:anyURI" name="downloadroot"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="settingsType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="bundleid"/>
+      <xs:element type="xs:string" name="company"/>
+      <xs:element type="xs:string" name="defaultdownloadpath"/>
+      <xs:element type="user:defaultinstallpathType" name="defaultinstallpath" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+      <xs:element type="xs:string" name="detectingvs"/>
+      <xs:element type="xs:string" name="downloadallcontent"/>
+      <xs:element type="xs:string" name="eula"/>
+      <xs:element type="xs:string" name="eulaversion"/>
+      <xs:element type="xs:string" name="guidedoccheckedbydefault"/>
+      <xs:element type="xs:string" name="guidedocvisibleduringupdate"/>
+      <xs:element type="xs:string" name="productname"/>
+      <xs:element type="xs:string" name="productversion"/>
+      <xs:element type="user:sourceresolutionType" name="sourceresolution" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+      <xs:element type="xs:string" name="upgradecode"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="parametersType" mixed="true">
+    <xs:sequence>
+      <xs:element type="xs:string" name="parameter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="pageType">
+    <xs:sequence>
+      <xs:element type="user:parametersType" name="parameters" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="type" use="optional"/>
+    <xs:attribute type="xs:string" name="condition" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="sectionType">
+    <xs:sequence>
+      <xs:element type="user:pageType" name="page" maxOccurs="unbounded" minOccurs="0" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="id" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="workflowType">
+    <xs:sequence>
+      <xs:element type="user:sectionType" name="section" maxOccurs="unbounded" minOccurs="0" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="id" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="wizardType">
+    <xs:sequence>
+      <xs:element type="user:workflowType" name="workflow" maxOccurs="unbounded" minOccurs="0" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="stringType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="id" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="customstringsType">
+    <xs:sequence>
+      <xs:element type="user:stringType" name="string" maxOccurs="unbounded" minOccurs="0" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="userexperiencemanifestType">
+    <xs:all>
+      <xs:element type="user:optionsType" name="options" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+      <xs:element type="user:settingsType" name="settings" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+      <xs:element type="user:wizardType" name="wizard" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+      <xs:element type="user:customstringsType" name="customstrings" xmlns:user="http://schemas.microsoft.com/Setup/2010/01/Burn/UserExperience"/>
+    </xs:all>
+  </xs:complexType>
+</xs:schema>

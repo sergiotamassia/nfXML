@@ -1,0 +1,33 @@
+<JobCandidate>    
+   <Name>      
+      <FirstName>Mike</FirstName>      
+      <MiddleName></MiddleName>      
+      <LastName>Chen</LastName>    
+   </Name>    
+   <Address>      
+      <Address1>34 181st Place SE</Address1>      
+      <Address2>Apt 3344</Address2>      
+      <City>Redmond</City>
+      <State>WA</State>      
+      <Country>US</Country>      
+      <PhoneNumber>9870909023</PhoneNumber>    
+   </Address>    
+   <Education>      
+      <BachelorDegree>BS</BachelorDegree>      
+      <MasterDegree>MS</MasterDegree>    
+   </Education>    
+   <Skills>      
+      <Skill>ASP.NET</Skill>      
+      <Skill>SQL</Skill>      
+   </Skills> 
+   <Employement>
+      <Employer>
+         <OrgName>ABC Technologies</OrgName>
+            <Location>NY, US</Location>
+         <StartDate>20/02/2000</StartDate>
+         <EndDate>10/04/2004</EndDate>
+         <JobTitle>Project Leader</JobTitle>
+         <Responsibility>Responsible for design,development,testing activities</Responsibility>
+      </Employer>
+   </Employement>
+</JobCandidate>
