@@ -1,15 +1,13 @@
 ************************************************************************************
-* Program created by Marco Plaza , 2013-2017
-* vfp2nofox@gmail.com
-* @vfp2nofox
-* REVISION 1.0500 2016/08/09
-* REVISION 1.1 2017/01/14
+* Marco Plaza , 2013-2017
+* @nfTools
 ************************************************************************************
 parameters ovfp,nofmt
 #include nfxml.h
 
 if vartype(m.ovfp) # 'O' or vartype(m.nofmt) # 'L'
 	error "Invalid parameter type"
+	return
 endif
 
 private all

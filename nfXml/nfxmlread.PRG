@@ -1,10 +1,6 @@
 ************************************************************************************
 * nfXMLread ( VFP XML PARSER  )
-* Program created by Marco Plaza , 2013-2016  @vfp2nofox
-* distributed under VFPX license terms
-* revision 1.0100 2016/08/08
-* REVISION 1.0500 2016/08/09
-* REVISION 1.1000 2017/01/14
+* Marco Plaza , 2013-2016  @nfTools
 **************************************************************************************
 parameters cxml,_arrayslist,xpathexp,_xpaths
 
@@ -25,19 +21,20 @@ endif
 
 do case
 case vartype(m.cxml) # 'C'
-	xerror('Must supply a valid Xml string or file name')
+	error 'Must supply a valid Xml string or file name'
 otherwise
 	oxml = nfxmlread2( cxml,_arrayslist,xpathexp , @_xpaths )
 endcase
 
-return iif(vartype(m.oxml)='O',m.oxml,.null.)
+if vartype(m.oxml) = 'O'
+	if type('m.oxml.xml') = 'O'
+		m.oxml = m.oxml.xml
+	endif
+	return m.oxml
+else
+	return .null.
+endif
 
-*------------------------------------------------
-procedure xerror( cmessage , lineno )
-*------------------------------------------------
-lineno = evl(m.lineno,'?')
-error 'nfXML '+m.calledfrom+': '+m.cmessage
-return to nfxmlread
 
 *---------------------------------------------------------------
 procedure nfxmlread2( cxml,_arrayslist,xpathexp,_xpaths )
@@ -100,7 +97,8 @@ with omsxml as msxml.domdocument
 endwith
 
 if !empty(m.cerror)
-	xerror( m.cerror , m.lineno )
+	error 'nfXML '+m.calledfrom+': '+m.cerror
+	return .f.
 else
 	return m.ovfp
 endif
