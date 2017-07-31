@@ -5,7 +5,7 @@
 Project Manager: Marco Plaza
 
 Project includes:
-* nfXmlRead.prg: standalone function, receives valid XML string, returns VFP empty-based object.
+* nfXmlRead.prg: standalone function, receives valid XML string or file name, returns VFP empty-based object.
 * nfXmlCreate.prg: receives VFP object , returns XML string.
 * test.prg: turns sample file test.xml into VFP object.
 * test.xml: sample XML file
@@ -106,11 +106,14 @@ any node with attributes will be created as object, and will have an object prop
 Namespaces are prepended to node names, separated by " _"
 this way ss:Styles gets the vfp property name ss_styles;
 
-object properties with "_" should be escaped with additional "_" 
+object properties with "\_" should be escaped with additional "\_" 
 
 this way:
-oxml.customer_id will serialize as <customer:id>
-oxml.customer__id will serialize as <customer_id>
+
+- oxml.customer\_id will serialize as: &lt;customer:id&gt;
+
+- oxml.customer\_\_id will serialize as: &lt;customer\_id&gt;
+
 
 ** OPTIONAL PARAMETERS**  
 @xpathExp : you can pass any xPath Expression for nfXMLRead to return only
