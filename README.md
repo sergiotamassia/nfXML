@@ -103,10 +103,10 @@ for example, you can't have an array called "row" since "row()" is a vfp functio
 any node with attributes will be created as object, and will have an object property called attr wich will hold the node attributes
 
 ** NAMESPACES**  
-Namespaces are prepended to node names, separated by " _"
-this way ss:Styles gets the vfp property name ss_styles;
+Namespaces are prepended to node names, separated by "\_"
+this way ss:Styles gets the vfp property name ss\_styles;
 
-object properties with "\_" should be escaped with additional "\_" 
+object properties with " _" should be escaped with additional " _" 
 
 this way:
 
@@ -120,5 +120,5 @@ this way:
 the desired node without parsing the entire document; useful for big xml files.
 
 
-**ERRORS**  
+**ERROR MANAGEMENT**  
 program will throw error if you supply invalid xml; manage accordingly.
