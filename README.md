@@ -100,7 +100,7 @@ will be prepended with '\_'
 for example, you can't have an array called "row" since "row()" is a vfp function, then it gets renamed to _row also names starting with numbers and so on.
 
 **NODE ATTRIBUTES**  
-any node with attributes will be created as object, and will have an object property called attr wich will hold the node attributes
+any node with attributes will be created as object, and will have a property called \_attr\_ wich will hold the node attributes
 
 **NAMESPACES**  
 Namespaces are prepended to node names, separated by "\_"
