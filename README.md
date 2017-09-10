@@ -89,24 +89,24 @@ For any other situation, you can pass a comma separated list of all the xpaths t
 **NAME PROPERTIES WITH SPECIAL CHARACTERS OR SPACES**  
 
 XML allows node names with spaces and special characters; nfXml safely converts them to valid vfp property names by replacing them on the following way:
-* ':' by '_'
-* '(' by '_l_'
-* ')' by '_r_'
-* '-' by '__h__'
-* '.' by '_d_'
+* ':' by '\_'
+* '(' by '\_l\_'
+* ')' by '\_r\_'
+* '-' by '\_h\_'
+* '.' by '\_d\_'
 
 **RESERVERD WORDS OR NON CHARACTER PROPERTY NAMES**  
-will be prepended with '_'
+will be prepended with '\_'
 for example, you can't have an array called "row" since "row()" is a vfp function, then it gets renamed to _row also names starting with numbers and so on.
 
-***NODE ATTRIBUTES**  
+**NODE ATTRIBUTES**  
 any node with attributes will be created as object, and will have an object property called attr wich will hold the node attributes
 
-** NAMESPACES**  
+**NAMESPACES**  
 Namespaces are prepended to node names, separated by "\_"
 this way ss:Styles gets the vfp property name ss\_styles;
 
-object properties with " _" should be escaped with additional " _" 
+object properties with "\_" should be escaped with additional "\_" 
 
 this way:
 
@@ -114,8 +114,9 @@ this way:
 
 - oxml.customer\_\_id will serialize as: &lt;customer\_id&gt;
 
+- oxml.customer\_\_\_id will serialize as: &lt;customer\_:id&gt;
 
-** OPTIONAL PARAMETERS**  
+**OPTIONAL PARAMETERS**  
 @xpathExp : you can pass any xPath Expression for nfXMLRead to return only
 the desired node without parsing the entire document; useful for big xml files.
 
