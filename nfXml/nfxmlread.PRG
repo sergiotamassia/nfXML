@@ -82,13 +82,13 @@ With omsxml As msxml.domdocument
 
 		If Vartype(m.oxmlnodes) = 'O' And Empty(m.cerror)
 
-*			Try
+			Try
 				ovfp = Createobject('empty')
 				recnodo(m.oxmlnodes,m.ovfp,'',_arrayslist,@_xpaths)
-*			Catch To oerr
-*				cerror = oerr.Message+' '+Transform(oerr.Lineno)
-*				Lineno = oerr.Lineno
-*			Endtry
+			Catch To oerr
+				cerror = oerr.Message+' '+Transform(oerr.Lineno)
+				Lineno = oerr.Lineno
+			Endtry
 
 		Endif
 

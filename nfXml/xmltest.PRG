@@ -2,15 +2,16 @@
 
 *
 * Marco Plaza, 2018 - @nfoxProject
+* 
 
 clear
 
 Public op ,onp
 
-opackages = getxml()
+oXmlSrc = getxml() 
 
-op   = nfxmlread( opackages('withPackage')  ,'/orderStatus/order[]')  && pass the xpath for .orderStatus.order to be identified as array
-onp  = nfxmlread( opackages('withNoPackage'),'/orderStatus/order[]')
+op   = nfxmlread( oXmlSrc('withPackage')  ,'/orderStatus/order[]')  && pass the xpath for .orderStatus.order to be identified as array
+onp  = nfxmlread( oXmlSrc('withNoPackage'),'/orderStatus/order[]')
 
 test( m.op )
 test( m.oNp )
@@ -365,8 +366,8 @@ ENDTEXT
 
 o = createobject('collection')
 with o
-	.add(m.nopackage,'withNoPackage')
-	.add(m.withpackage,'withPackage')
+	.add(m.nopackage,  'withNoPackage')
+	.add(m.withpackage,'withPackage'  )
 endwith
 
 return m.o
