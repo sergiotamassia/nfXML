@@ -1,258 +1,267 @@
 ************************************************************************************
 * nfXMLread ( VFP XML PARSER  )
-* Marco Plaza , 2013-2016  @nfTools
+* Marco Plaza , 2013-2018  @nfTools
+* Last Update: 2018-11-08
 **************************************************************************************
-parameters cxml,_arrayslist,xpathexp,_xpaths
+Parameters cxml,_arrayslist,xpathexp,_xpaths
 
 #include nfxml.h
-#define crlf chr(13)+chr(10)
+#Define crlf Chr(13)+Chr(10)
 
-_arrayslist = lower(','+evl(m._arrayslist,'')+',')
+_arrayslist = Lower(','+Evl(m._arrayslist,'')+',')
 
-private all
+Private All
 
-stacklevels=astackinfo(aerrs)
+stacklevels=Astackinfo(aerrs)
 
-if m.stacklevels > 1
-	calledfrom = 'called From '+aerrs(m.stacklevels-1,4)+' line '+transform(aerrs(m.stacklevels-1,5))
-else
+If m.stacklevels > 1
+	calledfrom = 'called From '+aerrs(m.stacklevels-1,4)+' line '+Transform(aerrs(m.stacklevels-1,5))
+Else
 	calledfrom = ''
-endif
+Endif
 
-do case
-case vartype(m.cxml) # 'C'
-	error 'Must supply a valid Xml string or file name'
-otherwise
+Do Case
+Case Vartype(m.cxml) # 'C'
+	Error 'Must supply a valid Xml string or file name'
+Otherwise
 	oxml = nfxmlread2( cxml,_arrayslist,xpathexp , @_xpaths )
-endcase
+Endcase
 
-if vartype(m.oxml) = 'O'
-	if type('m.oxml.xml') = 'O'
-		m.oxml = m.oxml.xml
-	endif
-	return m.oxml
-else
-	return .null.
-endif
+If Vartype(m.oxml) = 'O'
+	If Type('m.oxml.xml') = 'O'
+		m.oxml = m.oxml.XML
+	Endif
+	Return m.oxml
+Else
+	Return .Null.
+Endif
 
 
 *---------------------------------------------------------------
-procedure nfxmlread2( cxml,_arrayslist,xpathexp,_xpaths )
+Procedure nfxmlread2( cxml,_arrayslist,xpathexp,_xpaths )
 *---------------------------------------------------------------
 
-omsxml = createobject('msXml.domdocument')
+omsxml = Createobject('msXml.domdocument')
 cerror = ''
 
-with omsxml as msxml.domdocument
+With omsxml As msxml.domdocument
 
-	.async = .f.
+	.Async = .F.
 
-	if len(m.cxml) < 200 and file(m.cxml)
-		.load( m.cxml )
-	else
-		.loadxml(m.cxml)
-	endif
+	If Len(m.cxml) < 200 And File(m.cxml)
+		.Load( m.cxml )
+	Else
+		.LoadXML(m.cxml)
+	Endif
 
-	if !empty(.parseerror.reason)
+	If !Empty(.parseerror.reason)
 
-		cerror =  'msxml parseerror parsing XML line '+transform(.parseerror.line)+' : "'+rtrim(.parseerror.reason)+'"'
-		lineno = 0
+		cerror =  'msxml parseerror parsing XML line '+Transform(.parseerror.Line)+' : "'+Rtrim(.parseerror.reason)+'"'
+		Lineno = 0
 
-	else
+	Else
 
-		if vartype(m.xpathexp) = 'C'
+		If Vartype(m.xpathexp) = 'C'
 
-			try
+			Try
 
 				oxmlnodes = .selectnodes(m.xpathexp)
 
-			catch
+			Catch
 
 				cerror =  ' invalid XPATH expression ('+m.xpathexp+')'
-				lineno = 0
+				Lineno = 0
 
-			endtry
+			Endtry
 
-		else
+		Else
 
 			oxmlnodes = .childnodes()
 
-		endif
+		Endif
 
-		if vartype(m.oxmlnodes) = 'O' and empty(m.cerror)
+		If Vartype(m.oxmlnodes) = 'O' And Empty(m.cerror)
 
-			try
-				ovfp = createobject('empty')
+*			Try
+				ovfp = Createobject('empty')
 				recnodo(m.oxmlnodes,m.ovfp,'',_arrayslist,@_xpaths)
-			catch to oerr
-				cerror = oerr.message
-				lineno = oerr.lineno
-			endtry
+*			Catch To oerr
+*				cerror = oerr.Message+' '+Transform(oerr.Lineno)
+*				Lineno = oerr.Lineno
+*			Endtry
 
-		endif
+		Endif
 
 
-	endif
+	Endif
 
-endwith
+Endwith
 
-if !empty(m.cerror)
-	error 'nfXML '+m.calledfrom+': '+m.cerror
-	return .f.
-else
-	return m.ovfp
-endif
+If !Empty(m.cerror)
+	Error 'nfXML '+m.calledfrom+': '+m.cerror
+	Return .F.
+Else
+	Return m.ovfp
+Endif
 
 
 *---------------------------------------------------------------------------------
-procedure recnodo( onodos, esteo , _parentnode , _arrayslist , _xpaths )
+Procedure recnodo( onodos, esteo , _parentnode , _arrayslist , _xpaths )
 *---------------------------------------------------------------------------------
 
-private all
+Private All
 
-isarray = .f.
+isarray = .F.
 lastnodename = ''
 
-for each nodo in onodos
+For Each nodo In onodos
 
-	with nodo
+	With nodo
 
-		if .nodetype # 1 and .nodetype # 3
-			loop
-		endif
+		If ( .nodetype # 1 And .nodetype # 3  ) Or .nodename = '#text'
+			Loop
+		Endif
 
-		estextnode = .nodetype = 3 or ( .childnodes.length = 1 and ( .firstchild.nodetype = 3 or .firstchild.nodetype = 4 ) )
-		emptynode = .childnodes.length = 0
+		estextnode = .nodetype = 3 Or ( .childnodes.Length = 1 And ( .firstchild.nodetype = 3 Or .firstchild.nodetype = 4 ) )
+		emptynode = .childnodes.Length = 0
 
-		tieneatributos = .attributes.length > 0
+		Try
+			tieneatributos = .Attributes.Length > 0
+		Catch
+			tieneatributos = .F.
+		Endtry
 
-		do case
-		case m.emptynode and !m.tieneatributos
+		Do Case
+		Case m.emptynode And !m.tieneatributos
 			nuevovalor = ''
-		case m.estextnode and !m.tieneatributos
+		Case m.estextnode And !m.tieneatributos
 			nuevovalor = .firstchild.nodevalue
-		otherwise
-			nuevovalor = createobject('empty')
-		endcase
+		Otherwise
+			nuevovalor = Createobject('empty')
+		Endcase
 
-		if !m.isarray or ! .nodename == m.lastnodename
+		If !m.isarray Or ! .nodename == m.lastnodename
 
 			lastnodename = .nodename
 			propertyname = conv2asc(.nodename)
+			siblings = .selectnodes('../'+.nodename)
 
-			if  lower(','+_parentnode+'/'+.nodename+'[]') $ m._arrayslist or .selectnodes('../'+.nodename).length >  1
+			dupElements = Vartype(m.siblings) = 'O' And m.siblings.Length >  1
 
-				try
-					addproperty(m.esteo,(m.propertyname+'(1)'))
+			If  Lower(','+_parentnode+'/'+.nodename+'[]') $ m._arrayslist Or m.dupElements
+			
+				Try
 
-				catch
+					AddProperty(m.esteo,(m.propertyname+'(1)'))
+
+				Catch
 
 					propertyname = '_'+m.propertyname
 
-					addproperty(m.esteo,(m.propertyname+'(1)'))
+					AddProperty(m.esteo,(m.propertyname+'(1)'))
 
-				endtry
+				Endtry
 
 				esteo.&propertyname(1) = m.nuevovalor
 				elemproc = 'esteo.'+m.propertyname+'(1)'
-				isarray = .t.
+				isarray = .T.
 				arrayindicator = '[]'
 
-			else
+			Else
 
-				addproperty(m.esteo,m.propertyname,m.nuevovalor)
+				AddProperty(m.esteo,m.propertyname,m.nuevovalor)
 				elemproc = 'esteo.'+m.propertyname
-				isarray = .f.
+				isarray = .F.
 				arrayindicator = ''
 
-			endif
+			Endif
 
-		else
+		Else
 
-			nvoelem = alen(esteo.&propertyname)+1
-			nelemx  = alen(esteo.&propertyname)
+			nvoelem = Alen(esteo.&propertyname)+1
+			nelemx  = Alen(esteo.&propertyname)
 
-			dimension esteo.&propertyname( m.nvoelem )
+			Dimension esteo.&propertyname( m.nvoelem )
 			esteo.&propertyname( nvoelem ) = m.nuevovalor
-			elemproc = 'esteo.'+m.propertyname+'('+transform(m.nvoelem)+')'
+			elemproc = 'esteo.'+m.propertyname+'('+Transform(m.nvoelem)+')'
 
-		endif
+		Endif
 
-		if vartype(m._xpaths) = 'C'
+		If Vartype(m._xpaths) = 'C'
 
 			currentxpath = m._parentnode+'/'+.nodename+m.arrayindicator
 
-			if not m.currentxpath $ m._xpaths
+			If Not m.currentxpath $ m._xpaths
 				_xpaths = m._xpaths+ m.currentxpath+crlf
-			endif
+			Endif
 
-		endif
+		Endif
 
 
-		if m.tieneatributos
+		If m.tieneatributos
 
-			if m.estextnode
-				addproperty(&elemproc,nodetexttag,.firstchild.nodevalue)
+			If m.estextnode
+				AddProperty(&elemproc,nodetexttag,.firstchild.nodevalue)
 
-				if vartype(m._xpaths) = 'C'
+				If Vartype(m._xpaths) = 'C'
 					currentxpath = m._parentnode
-					if not m.currentxpath $ m._xpaths
+					If Not m.currentxpath $ m._xpaths
 						_xpaths = m._xpaths+m.currentxpath+crlf
-					endif
-				endif
+					Endif
+				Endif
 
 
-			endif
+			Endif
 
-			addproperty(&elemproc,attributetag,createobject('empty'))
+			AddProperty(&elemproc,attributetag,Createobject('empty'))
 
 			oa = m.elemproc+'.'+attributetag
 
-			for each atributo in .attributes
+			For Each atributo In .Attributes
 
-				nombreatr = conv2asc(atributo.name)
+				nombreatr = conv2asc(atributo.Name)
 
-				try
-					addproperty(&oa,m.nombreatr,atributo.value)
-				catch
+				Try
+					AddProperty(&oa,m.nombreatr,atributo.Value)
+				Catch
 					m.nombreatr = '_'+m.nombreatr
-					addproperty(&oa,m.nombreatr,atributo.value)
-				endtry
+					AddProperty(&oa,m.nombreatr,atributo.Value)
+				Endtry
 
-				if vartype(m._xpaths) = 'C'
-					currentxpath = m._parentnode+'/'+.nodename+m.arrayindicator+'/@'+m.atributo.name
-					if not m.currentxpath $ m._xpaths
+				If Vartype(m._xpaths) = 'C'
+					currentxpath = m._parentnode+'/'+.nodename+m.arrayindicator+'/@'+m.atributo.Name
+					If Not m.currentxpath $ m._xpaths
 						_xpaths = m._xpaths+m.currentxpath+crlf
-					endif
-				endif
+					Endif
+				Endif
 
-			endfor
+			Endfor
 
-		endif
+		Endif
 
-		if !m.estextnode and .childnodes.length > 0
+		If !m.estextnode And .childnodes.Length > 0
 			=recnodo( .childnodes(), &elemproc , _parentnode+'/'+.nodename+m.arrayindicator, _arrayslist , @_xpaths )
-		endif
+		Endif
 
-	endwith
+	Endwith
 
 
-endfor
+Endfor
 
 
 *------------------------------
-function conv2asc( ctag )
+Function conv2asc( ctag )
 *------------------------------
 
-local n
+Local N
 
-ctag = strtran(m.ctag,'_','__')
+ctag = Strtran(m.ctag,'_','__')
 
-for n = 2 to escapecount*2 step 2
-	m.ctag = strtran(m.ctag,getwordnum(escapelist,m.n-1,','), getwordnum(escapelist,m.n,',') )
-endfor
+For N = 2 To escapecount*2 Step 2
+	m.ctag = Strtran(m.ctag,Getwordnum(escapelist,m.n-1,','), Getwordnum(escapelist,m.n,',') )
+Endfor
 
-return m.ctag
+Return m.ctag
 
 
 
